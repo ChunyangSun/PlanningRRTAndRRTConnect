@@ -16,9 +16,9 @@ def main(robot, planning_env, planner):
 
     start_config = numpy.array(robot.GetCurrentConfiguration())
     if robot.name == 'herb':
-        goal_config = numpy.array([ 3.68, -1.90,  0.00,  2.20,  0.00,  0.00,  0.00 ])
+        goal_config = numpy.array([ 3.68, -1.90,  0.00,  2.20,  0.00,  0.00,  0.00 ]) #3.68, -1.90,  0.00,  2.20,  0.00,  0.00,  0.00
     else:
-        goal_config = numpy.array([2.0, 0.0])
+        goal_config = numpy.array([2.0, 0.0]) # 2.0, 0.0
 
     plan = planner.Plan(start_config, goal_config)
     plan_short = planning_env.ShortenPath(plan)

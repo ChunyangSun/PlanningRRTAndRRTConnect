@@ -1,5 +1,6 @@
 import numpy
 import pylab as pl
+import random
 
 class SimpleEnvironment(object):
     
@@ -30,7 +31,11 @@ class SimpleEnvironment(object):
         #
         # TODO: Generate and return a random configuration
         #
-        
+        randX = random.randrange(-5, 5) 
+        randY = random.randrange(-5, 5)
+        config = [randX, randY]
+        print "GenerateRandomConfiguration is returning config: " + config 
+
         return numpy.array(config)
 
     def ComputeDistance(self, start_config, end_config):
@@ -38,7 +43,9 @@ class SimpleEnvironment(object):
         # TODO: Implement a function which computes the distance between
         # two configurations
         #
-        pass
+        dist = numpy.sqrt((start_config[0] - end_config[0])**2 + (start_config[1] - end_config[1])**2)
+
+        return dist
 
     def Extend(self, start_config, end_config):
         
@@ -46,8 +53,23 @@ class SimpleEnvironment(object):
         # TODO: Implement a function which attempts to extend from 
         #   a start configuration to a goal configuration
         #
-        pass
+        x0 = start_config[0]
+        x1 = end_config[0]
+        y0 = start_config[1]
+        y1 = end_config[1]
+        step = 0.1
 
+        for x in xrange(x0, x1, step):
+            # y = k*t + b  x = 
+            gradient = (y1 - y0) / (x1 - x0)
+            y = y1 - gradient * (x1 - x)
+            if (env.CheckCollision([x, y], table)):
+                break
+        if [x, y] == [x0, y0]:
+            return None 
+        return [x, y]
+    
+    import time
     def ShortenPath(self, path, timeout=5.0):
         
         # 
@@ -55,6 +77,12 @@ class SimpleEnvironment(object):
         #  on the given path.  Terminate the shortening after the 
         #  given timout (in seconds).
         #
+        start = end = time.time()
+        while end - start < timeout:
+            # TODO: implement function
+
+            end = time.time() 
+
         return path
 
 
