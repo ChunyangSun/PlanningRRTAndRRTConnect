@@ -1,7 +1,6 @@
-import numpy
+import numpy as np
 import pylab as pl
-import random
-#this is a trivial change!
+import IPython
 
 class SimpleEnvironment(object):
     
@@ -13,7 +12,7 @@ class SimpleEnvironment(object):
         table = self.robot.GetEnv().ReadKinBodyXMLFile('models/objects/table.kinbody.xml')
         self.robot.GetEnv().Add(table)
 
-        table_pose = numpy.array([[ 0, 0, -1, 1.0], 
+        table_pose = np.array([[ 0, 0, -1, 1.0], 
                                   [-1, 0,  0, 0], 
                                   [ 0, 1,  0, 0], 
                                   [ 0, 0,  0, 1]])
@@ -27,24 +26,19 @@ class SimpleEnvironment(object):
         self.p = p
         
     def GenerateRandomConfiguration(self):
-        config = [0] * 2;
-        lower_limits, upper_limits = self.boundary_limits
-        #
-        # TODO: Generate and return a random configuration
-        #
-        randX = random.randrange(-5, 5) 
-        randY = random.randrange(-5, 5)
-        config = [randX, randY]
-        print "GenerateRandomConfiguration is returning config: " + config 
+        limits = np.array(self.boundary_limits)
+        config = (config * (limits[1] - limits[0])) + limits[0]
 
-        return numpy.array(config)
+        #TODO: check for collision and recurse!
+
+        return config
 
     def ComputeDistance(self, start_config, end_config):
         #
         # TODO: Implement a function which computes the distance between
         # two configurations
         #
-        dist = numpy.sqrt((start_config[0] - end_config[0])**2 + (start_config[1] - end_config[1])**2)
+        dist = np.sqrt((start_config[0] - end_config[0])**2 + (start_config[1] - end_config[1])**2)
 
         return dist
 
