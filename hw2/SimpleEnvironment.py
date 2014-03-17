@@ -1,6 +1,7 @@
 import numpy
 import pylab as pl
 import random
+#this is a trivial change!
 
 class SimpleEnvironment(object):
     
