@@ -1,9 +1,7 @@
 import numpy as np
 import pylab as pl
-import IPython
 
 class SimpleEnvironment(object):
-    
     def __init__(self, herb):
         self.robot = herb.robot
         self.boundary_limits = [[-5., -5.], [5., 5.]]
@@ -24,47 +22,37 @@ class SimpleEnvironment(object):
     def SetGoalParameters(self, goal_config, p = 0.2):
         self.goal_config = goal_config
         self.p = p
-        
+
+    #returns true if a point is not in collision
+    def isValid(self, point):
+        T = np.identity(4)
+        T[0,3] = point[0]
+        T[1,3] = point[1]
+        self.robot.setTransform(T)
+        return not self.robot.GetEnv().CheckCollision(self.robot)
+
+    
     def GenerateRandomConfiguration(self):
+        config = np.random.random(2)
         limits = np.array(self.boundary_limits)
         config = (config * (limits[1] - limits[0])) + limits[0]
-
-        #TODO: check for collision and recurse!
-
-        return config
+        return config if self.isValid(config) else self.GenerateRandomConfiguration()
 
     def ComputeDistance(self, start_config, end_config):
-        #
-        # TODO: Implement a function which computes the distance between
-        # two configurations
-        #
         dist = np.sqrt((start_config[0] - end_config[0])**2 + (start_config[1] - end_config[1])**2)
-
         return dist
 
     def Extend(self, start_config, end_config):
-        
-        #
-        # TODO: Implement a function which attempts to extend from 
-        #   a start configuration to a goal configuration
-        #
-        x0 = start_config[0]
-        x1 = end_config[0]
-        y0 = start_config[1]
-        y1 = end_config[1]
-        step = 0.1
-
-        for x in xrange(x0, x1, step):
-            # y = k*t + b  x = 
-            gradient = (y1 - y0) / (x1 - x0)
-            y = y1 - gradient * (x1 - x)
-            if (env.CheckCollision([x, y], table)):
+        configs = np.array([start_config, end_config])
+        last = start_config
+        for tau in np.arange(0.0, 1.01, 0.01):
+            newconfig = np.average(configs, axis=0, weights=[1.0-tau, tau])
+            if(self.isValid(newconfig)):
+                last = newconfig
+            else:
                 break
-        if [x, y] == [x0, y0]:
-            return None 
-        return [x, y]
-    
-    import time
+        return last
+
     def ShortenPath(self, path, timeout=5.0):
         
         # 
