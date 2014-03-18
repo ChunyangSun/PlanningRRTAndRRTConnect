@@ -57,23 +57,35 @@ class RRTConnectPlanner(object):
         # get the goal ID in edges 
         fkeyID = max(ftree.edges.keys())
         rkeyID = max(rtree.edges.keys())
+	pathlength = 0
+	lastx = 0
+	lasty = 0
         # add front-tree path into plancopy
         while (fkeyID != ftree.GetRootId()):
             # ID in dict edge is indexes of [x,y] position in 2D list vertices
             fvalueID = ftree.edges[fkeyID] 
             plancopy.append(ftree.vertices[fvalueID]) 
+	    pathlength = pathlength + pow(pow((ftree.vertices[fvalueID][0]-lastx), 2) + pow((ftree.vertices[fvalueID][1]-lasty), 2), 0.5)
+            lastx = ftree.vertices[fvalueID][0]
+            lasty = ftree.vertices[fvalueID][1]
             fkeyID = fvalueID
         # reverse plancopy, from front tree root to the connecting vertice
         while (len(plancopy) > 0):
             plan.append(plancopy.pop())
 
-        print plan
-        print   
+	lastx = 0
+	lasty = 0
         # add reverse-tree path into path directly, from connecting vertice to goal
         while (rkeyID != rtree.GetRootId()):
             # ID in dict edge is indexes of [x,y] position in 2D list vertices
             rvalueID = rtree.edges[rkeyID] 
             plan.append(rtree.vertices[rvalueID]) 
-            rkeyID = rvalueID
-        print plan 
+	    pathlength = pathlength + pow(pow((rtree.vertices[rvalueID][0]-lastx), 2) + pow((rtree.vertices[rvalueID][1]-lasty), 2), 0.5)
+	    lastx = rtree.vertices[rvalueID][0]
+            lasty = rtree.vertices[rvalueID][1]
+	    rkeyID = rvalueID
+
+        print "points are: ", plan 
+        print "path length is: ", pathlength
+
         return plan

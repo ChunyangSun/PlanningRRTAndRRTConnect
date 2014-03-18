@@ -54,14 +54,21 @@ class RRTPlanner(object):
             goalID = max(tree.edges.keys())
             keyID = goalID
         # now q_new is goal, find way back to start 
+	pathlength = 0
+	lastx = 0
+	lasty = 0
         while (keyID != tree.GetRootId()):
             # ID in dict edge is indexes of [x,y] position in 2D list vertices
             valueID = tree.edges[keyID] 
             plancopy.append(tree.vertices[valueID]) 
+	    pathlength = pathlength + pow(pow((tree.vertices[valueID][0]-lastx), 2) + pow((tree.vertices[valueID][1]-lasty), 2), 0.5)
+            lastx = tree.vertices[valueID][0]
+            lasty = tree.vertices[valueID][1]
             keyID = valueID
 
         while (len(plancopy) > 0):
             plan.append(plancopy.pop())
         plan.append(goal_config)
-
+	
+	print pathlength	
         return plan
