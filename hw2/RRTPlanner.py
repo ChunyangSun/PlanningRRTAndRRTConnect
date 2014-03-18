@@ -17,6 +17,7 @@ class RRTPlanner(object):
         tree = RRTTree(self.planning_env, start_config)
 
         plan = []
+        plancopy = []
         if self.visualize and hasattr(self.planning_env, 'InitializePlot'):
             self.planning_env.InitializePlot(goal_config)
         # TODO: Here you will implement the rrt planner
@@ -24,10 +25,6 @@ class RRTPlanner(object):
         #  of dimension k x n where k is the number of waypoints
         #  and n is the dimension of the robots configuration space - (jane) which is 2 in this case? 
         
-        plancopy = copy.deepcopy(plan)
-
-        # starting id is 0
-        vid = vid_last = 0
         q_new = start_config
         sampleGoal = 5
         count = 0
@@ -41,13 +38,8 @@ class RRTPlanner(object):
                 count = 0 
             else: q_rand = self.planning_env.GenerateRandomConfiguration()
             count += 1
-            print q_rand
-
             # find q_rand's nearest milestone q in the tree:    
             [vid_start, q_near] = tree.GetNearestVertex(q_rand)             
-            
-            IPython.embed()
-
             # extend a step from q to q_new towards q_rand 
             q_new = self.planning_env.Extend(q_near, q_rand)
             # add q_new to the tree
@@ -71,8 +63,5 @@ class RRTPlanner(object):
         while (len(plancopy) > 0):
             plan.append(plancopy.pop())
         plan.append(goal_config)
-        print len(tree.vertices)
-        print len(plan)
-        print tree.edges
 
         return plan

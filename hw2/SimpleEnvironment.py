@@ -53,6 +53,7 @@ class SimpleEnvironment(object):
                 last = newconfig
             else:
                 break
+        # return the last collision free point 
         return last
 
     def ShortenPath(self, path, timeout=5.0):
