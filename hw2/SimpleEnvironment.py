@@ -28,7 +28,7 @@ class SimpleEnvironment(object):
         T = np.identity(4)
         T[0,3] = point[0]
         T[1,3] = point[1]
-        self.robot.setTransform(T)
+        self.robot.SetTransform(T)
         return not self.robot.GetEnv().CheckCollision(self.robot)
 
     
@@ -39,6 +39,8 @@ class SimpleEnvironment(object):
         return config if self.isValid(config) else self.GenerateRandomConfiguration()
 
     def ComputeDistance(self, start_config, end_config):
+        # print "end_config[0], end_config[1] ", end_config[0], end_config[1]
+
         dist = np.sqrt((start_config[0] - end_config[0])**2 + (start_config[1] - end_config[1])**2)
         return dist
 
@@ -59,15 +61,15 @@ class SimpleEnvironment(object):
         # TODO: Implement a function which performs path shortening
         #  on the given path.  Terminate the shortening after the 
         #  given timout (in seconds).
-        #
-        start = end = time.time()
-        while end - start < timeout:
-            # TODO: implement function
+        # #
+        # start = end = time.time()
+        # while end - start < timeout:
+        #     # TODO: implement function
 
-            end = time.time() 
+        #     end = time.time() 
 
-        return path
-
+        # return path
+        pass 
 
     def InitializePlot(self, goal_config):
         self.fig = pl.figure()

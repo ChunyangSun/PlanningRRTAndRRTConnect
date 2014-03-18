@@ -34,13 +34,13 @@ class SimpleRobot(object):
         traj.Init(config_spec)
 
         idx = 0
+        print plan
         for pt in plan:
             traj.Insert(idx, pt)
             idx = idx + 1
         return traj
 
-    def ExecuteTrajectory(self, traj):
-        
+    def ExecuteTrajectory(self, traj):        
         # Send the trajectory to the controller and wait for execution to complete
         max_vel = self.robot.GetAffineTranslationMaxVels()[:2]
         max_accel = 3 * max_vel
