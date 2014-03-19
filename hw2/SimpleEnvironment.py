@@ -57,17 +57,20 @@ class SimpleEnvironment(object):
         return last
 
     def ComputePathLength(self, path):
-        i = 1
+	print "path is: ", path        
+	i = 1
         length = 0.0
         while i < len(path):
             length += self.ComputeDistance(path[i-1], path[i])
             i += 1
+	    #print "Node #: ", i
+	    #print "Current length ", length
         print "Number of nodes: ", i
         return length
 
     def ShortenPath(self, path, timeout=5.0):
-        print "before shortening: "
-	print path
+        #print "before shortening: "
+	#print path
         # 
         # TODO: Implement a function which performs path shortening
         #  on the given path.  Terminate the shortening after the 
@@ -101,8 +104,8 @@ class SimpleEnvironment(object):
 	    # break out of while loop when time out 
 	    end = time.time() 
 	    if end - start > timeout: break 
-	print "after shortening: "
-	print shortPath
+	#print "after shortening: "
+	#print shortPath
         return shortPath
 
     def InitializePlot(self, goal_config):
