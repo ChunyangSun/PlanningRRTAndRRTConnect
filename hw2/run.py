@@ -10,11 +10,9 @@ from SimpleEnvironment import SimpleEnvironment
 from RRTPlanner import RRTPlanner
 from RRTConnectPlanner import RRTConnectPlanner
 
-import IPython
+import time
 
-def main(robot, planning_env, planner):
-
-    raw_input('Press any key to begin planning')
+def main(robot, planning_env, planner, iterations = 1, show = False):
 
     start_config = numpy.array(robot.GetCurrentConfiguration())
     if robot.name == 'herb':
@@ -22,16 +20,25 @@ def main(robot, planning_env, planner):
     else:
         goal_config = numpy.array([2.0, 0.0]) # 2.0, 0.0
 
-    plan = planner.Plan(start_config, goal_config)
-    print("Original Path Length: {:.3f}".format(planning_env.ComputePathLength(plan)))
-    
-    #traj = robot.ConvertPlanToTrajectory(plan)
-    plan_short = planning_env.ShortenPath(plan)
-    traj = robot.ConvertPlanToTrajectory(plan_short)
-    robot.ExecuteTrajectory(traj)
-
-    print("Shortened Path Length: {:.3f}".format(planning_env.ComputePathLength(planning_env.ShortenPath(plan))))
-    #IPython.embed()
+    i = 0
+    while i < iterations:
+        print 'Pass: ' + str(i)
+        start = time.time()
+        plan = planner.Plan(start_config, goal_config)
+        plantime = time.time() - start
+        print("Original Path Length: {:.3f}".format(planning_env.ComputePathLength(plan)))
+        print("Original Path Nodes: " + str(len(plan)))
+        if show:
+            traj = robot.ConvertPlanToTrajectory(plan)
+            robot.ExecuteTrajectory(traj)
+        plan_short = planning_env.ShortenPath(plan)
+        print("Shortened Path Length: {:.3f}".format(planning_env.ComputePathLength(planning_env.ShortenPath(plan))))
+        print("Shortened Path Nodes: " + str(len(plan_short)))
+        if show:
+            traj = robot.ConvertPlanToTrajectory(plan_short)
+            robot.ExecuteTrajectory(traj)
+        print("Planning time: " + str(plantime))
+        i += 1
 
 if __name__ == "__main__":
     
@@ -47,7 +54,10 @@ if __name__ == "__main__":
                         help='Enable visualization of tree growth (only applicable for simple robot)')
     parser.add_argument('-d', '--debug', action='store_true',
                         help='Enable debug logging')
-    
+    parser.add_argument('-n', '--noshow', action='store_true',
+                        help='Disable Robot Dancing for speed')
+    parser.add_argument('-i', '--iterations', type=int, default=1,
+                    help='How many times to iterate')
 
     args = parser.parse_args()
     
@@ -82,5 +92,4 @@ if __name__ == "__main__":
     else:
         print 'Unknown planner option: %s' % args.planner
         exit(0)
-
-    main(robot, planning_env, planner)
+    main(robot, planning_env, planner, args.iterations, not args.noshow)
