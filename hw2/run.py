@@ -29,7 +29,7 @@ def main(robot, planning_env, planner):
     robot.ExecuteTrajectory(traj)
 
     print("Original Path Length: {:.3f}".format(planning_env.ComputePathLength(plan)))
-    print("Shortened Path Length: {:.3f}".format(planning_env.ComputePathLength(plan)))
+    print("Shortened Path Length: {:.3f}".format(planning_env.ComputePathLength(planning_env.ShortenPath(plan))))
     #IPython.embed()
 
 if __name__ == "__main__":

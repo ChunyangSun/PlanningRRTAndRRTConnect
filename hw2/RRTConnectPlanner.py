@@ -76,5 +76,6 @@ class RRTConnectPlanner(object):
         while (currVertex != rtree.GetRootId()):
             currVertex = rtree.edges[currVertex ] 
             plan.append(rtree.vertices[currVertex]) 
-        plan.append(goal_config)
-        return plan
+
+        # shorten path and return 
+        return self.planning_env.ShortenPath(plan)

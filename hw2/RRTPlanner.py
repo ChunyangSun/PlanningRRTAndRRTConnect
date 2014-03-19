@@ -31,7 +31,6 @@ class RRTPlanner(object):
             # Pick a sample q_rand in space C, sample the goal every 5 cycles 
             q_rand  = self.planning_env.GenerateRandomConfiguration() if (count % 5) else goal_config
             count += 1
-
             # find q_rand's nearest milestone q in the tree:    
             [vid_start, q_near] = tree.GetNearestVertex(q_rand)             
             # extend a step from q to q_new towards q_rand 
@@ -55,4 +54,6 @@ class RRTPlanner(object):
             currVertex = tree.edges[currVertex] 
             plan.insert(0, tree.vertices[currVertex]) 
         plan.append(goal_config)
-        return plan
+
+        # shorten path and return 
+        return self.planning_env.ShortenPath(plan)
