@@ -62,7 +62,7 @@ class SimpleEnvironment(object):
         while i < len(path):
             length += self.ComputeDistance(path[i-1], path[i])
             i += 1
-	print "Number of nodes: ", i
+        print "Number of nodes: ", i
         return length
 
     def ShortenPath(self, path, timeout=5.0):
