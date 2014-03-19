@@ -56,8 +56,7 @@ class SimpleEnvironment(object):
         # return the last collision free point 
         return last
 
-    def ComputePathLength(self, path):
-	print "path is: ", path        
+    def ComputePathLength(self, path):      
 	i = 1
         length = 0.0
         while i < len(path):

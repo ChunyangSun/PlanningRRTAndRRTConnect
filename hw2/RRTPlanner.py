@@ -54,4 +54,4 @@ class RRTPlanner(object):
             plan.insert(0, tree.vertices[currVertex]) 
         plan.append(goal_config)
 
-        return path
+        return plan
