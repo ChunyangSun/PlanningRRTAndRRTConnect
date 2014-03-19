@@ -63,49 +63,34 @@ class SimpleEnvironment(object):
         while i < len(path):
             length += self.ComputeDistance(path[i-1], path[i])
             i += 1
-	    #print "Node #: ", i
-	    #print "Current length ", length
-        print "Number of nodes: ", i
         return length
 
     def ShortenPath(self, path, timeout=5.0):
-        #print "before shortening: "
-	#print path
-        # 
-        # TODO: Implement a function which performs path shortening
-        #  on the given path.  Terminate the shortening after the 
-        #  given timout (in seconds).
-
         start = end = time.time()
         toBeDeleted = [1000,1000]        
-	lastPath = []
-	idxList = []
+        lastPath = []
+        idxList = []
 
-	# stop when there's no more shortening to be done 
-	while not np.array_equal(path, lastPath): 
-	    lastPath = copy.deepcopy(path)
+        # stop when there's no more shortening to be done 
+        while not np.array_equal(path, lastPath): 
+            lastPath = copy.deepcopy(path)
 
-	    # keep checking alternate adjacent nodes  
-	    for idx in xrange(1, len(path) - 2):
+            # keep checking alternate adjacent nodes  
+            for idx in xrange(1, len(path) - 2):
                 n1 = path[idx - 1] 
                 n2 = path[idx + 1]
 
                 # make sure you are not connecting the two toBeDeleted nodes
-                if (not np.array_equal(n1, toBeDeleted)) and (not np.array_equal(n2, toBeDeleted)) and \
-	        np.array_equal(self.Extend(n1, n2), n2):
-
-		    # record the toBeDeleted node and its index
+                if (not np.array_equal(n1, toBeDeleted)) and (not np.array_equal(n2, toBeDeleted)) and np.array_equal(self.Extend(n1, n2), n2):
+                    # record the toBeDeleted node and its index
                     path[idx] = toBeDeleted
-		    idxList.append(idx)
+                idxList.append(idx)
 
-	    # delete the toBeDeleted node according to index
-	    shortPath = np.delete(path, idxList, axis = 0)
+            # delete the toBeDeleted node according to index
+            shortPath = np.delete(path, idxList, axis = 0)
 
-	    # break out of while loop when time out 
-	    end = time.time() 
-	    if end - start > timeout: break 
-	#print "after shortening: "
-	#print shortPath
+            # break out of while loop when time out 
+            if (time.time() - start) > timeout: break
         return shortPath
 
     def InitializePlot(self, goal_config):

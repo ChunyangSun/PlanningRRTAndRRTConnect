@@ -46,8 +46,7 @@ class RRTPlanner(object):
             if self.visualize:
                 self.planning_env.PlotEdge(q_near, q_new) 
 
-        # now q_new is the goal, with index vid_end
-        # retrace the tree to the start to get the plan
+        print "Tree size: " + str(len(tree.vertices))
         plan = []
         currVertex = vid_end
         while (currVertex != tree.GetRootId()):
@@ -55,5 +54,4 @@ class RRTPlanner(object):
             plan.insert(0, tree.vertices[currVertex]) 
         plan.append(goal_config)
 
-        # shorten path and return 
-        return self.planning_env.ShortenPath(plan)
+        return path
