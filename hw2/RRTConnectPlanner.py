@@ -65,6 +65,9 @@ class RRTConnectPlanner(object):
         # final goal IDs are fvid_end, rvid_end
         plan = []
 
+        print "Forward tree size: " + str(len(ftree.vertices))
+        print "Reverse tree size: " + str(len(rtree.vertices))
+
         # add front-tree path into the plan
         currVertex = fvid_end
         while (currVertex != ftree.GetRootId()):
@@ -77,5 +80,4 @@ class RRTConnectPlanner(object):
             currVertex = rtree.edges[currVertex ] 
             plan.append(rtree.vertices[currVertex]) 
 
-        # shorten path and return 
-        return self.planning_env.ShortenPath(plan)
+        return plan
