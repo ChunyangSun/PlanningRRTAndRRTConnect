@@ -78,8 +78,8 @@ if __name__ == "__main__":
 
     main(robot, planning_env, planner)
 
-    import IPython
-    IPython.embed()
+    #import IPython
+    #IPython.embed()
 
         
     
