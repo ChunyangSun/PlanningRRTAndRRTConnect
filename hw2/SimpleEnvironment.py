@@ -54,6 +54,14 @@ class SimpleEnvironment(object):
         # return the last collision free point 
         return last
 
+    def ComputePathLength(self, path):
+        i = 1
+        length = 0.0
+        while i < len(path):
+            length += self.ComputeDistance(path[i-1], path[i])
+            i += 1
+        return length
+
     def ShortenPath(self, path, timeout=5.0):
         
         # 
@@ -66,9 +74,7 @@ class SimpleEnvironment(object):
         #     # TODO: implement function
 
         #     end = time.time() 
-
-        # return path
-        pass 
+        return path
 
     def InitializePlot(self, goal_config):
         self.fig = pl.figure()

@@ -10,6 +10,8 @@ from SimpleEnvironment import SimpleEnvironment
 from RRTPlanner import RRTPlanner
 from RRTConnectPlanner import RRTConnectPlanner
 
+import IPython
+
 def main(robot, planning_env, planner):
 
     raw_input('Press any key to begin planning')
@@ -21,10 +23,14 @@ def main(robot, planning_env, planner):
         goal_config = numpy.array([2.0, 0.0]) # 2.0, 0.0
 
     plan = planner.Plan(start_config, goal_config)
-    traj = robot.ConvertPlanToTrajectory(plan)
-    # plan_short = planning_env.ShortenPath(plan)
-    # traj = robot.ConvertPlanToTrajectory(plan_short)
+    #traj = robot.ConvertPlanToTrajectory(plan)
+    plan_short = planning_env.ShortenPath(plan)
+    traj = robot.ConvertPlanToTrajectory(plan_short)
     robot.ExecuteTrajectory(traj)
+
+    print("Original Path Length: {:.3f}".format(planning_env.ComputePathLength(plan)))
+    print("Shortened Path Length: {:.3f}".format(planning_env.ComputePathLength(plan)))
+    #IPython.embed()
 
 if __name__ == "__main__":
     
@@ -77,9 +83,3 @@ if __name__ == "__main__":
         exit(0)
 
     main(robot, planning_env, planner)
-
-    #import IPython
-    #IPython.embed()
-
-        
-    
