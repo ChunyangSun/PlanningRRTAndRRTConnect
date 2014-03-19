@@ -1,5 +1,5 @@
-import numpy
-import random
+import numpy as np
+import IPython
 
 class HerbEnvironment(object):
     
@@ -10,14 +10,14 @@ class HerbEnvironment(object):
         table = self.robot.GetEnv().ReadKinBodyXMLFile('models/objects/table.kinbody.xml')
         self.robot.GetEnv().Add(table)
 
-        table_pose = numpy.array([[ 0, 0, -1, 0.7], 
+        table_pose = np.array([[ 0, 0, -1, 0.7], 
                                   [-1, 0,  0, 0], 
                                   [ 0, 1,  0, 0], 
                                   [ 0, 0,  0, 1]])
         table.SetTransform(table_pose)
 
         # set the camera
-        camera_pose = numpy.array([[ 0.3259757 ,  0.31990565, -0.88960678,  2.84039211],
+        camera_pose = np.array([[ 0.3259757 ,  0.31990565, -0.88960678,  2.84039211],
                                    [ 0.94516159, -0.0901412 ,  0.31391738, -0.87847549],
                                    [ 0.02023372, -0.9431516 , -0.33174637,  1.61502194],
                                    [ 0.        ,  0.        ,  0.        ,  1.        ]])
@@ -29,34 +29,37 @@ class HerbEnvironment(object):
     def SetGoalParameters(self, goal_config, p = 0.2):
         self.goal_config = goal_config
         self.p = p
-        
+    
+    def isValid(self, config):
+        self.robot.SetActiveDOFValues(config)
+        return not self.robot.GetEnv().CheckCollision(self.robot)
+
 
     def GenerateRandomConfiguration(self):
-        config = [0] * len(self.robot.GetActiveDOFIndices())
+        lower_limits, upper_limits = self.robot.GetActiveDOFLimits()
+        config = np.random.random(len(lower_limits))
+        #IPython.embed()
+        config = (config * (upper_limits - lower_limits)) + lower_limits
+        return config if self.isValid(config) else self.GenerateRandomConfiguration() #could recur infinitely, but unlikely
 
-        #
-        # TODO: Generate and return a random configuration
-        #
-        return numpy.array(config)
 
-
-    
+    #distance in configuration space is just sum of joint differences?
+    #could do FK, but do we need to? --NJC
     def ComputeDistance(self, start_config, end_config):
-        
-        #
-        # TODO: Implement a function which computes the distance between
-        # two configurations
-        #
-        pass
+        return np.sum(np.absolute(end_config - start_config))
 
 
     def Extend(self, start_config, end_config):
-        
-        #
-        # TODO: Implement a function which attempts to extend from 
-        #   a start configuration to a goal configuration
-        #
-        pass
+        configs = np.array([start_config, end_config])
+        last = start_config
+        for tau in np.arange(0.0, 1.01, 0.01):
+            newconfig = np.average(configs, axis=0, weights=[1.0-tau, tau])
+            if(self.isValid(newconfig)):
+                last = newconfig
+            else:
+                break
+        # return the last collision free point 
+        return last
         
     def ShortenPath(self, path, timeout=5.0):
         

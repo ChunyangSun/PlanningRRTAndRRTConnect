@@ -39,8 +39,6 @@ class SimpleEnvironment(object):
         return config if self.isValid(config) else self.GenerateRandomConfiguration()
 
     def ComputeDistance(self, start_config, end_config):
-        # print "end_config[0], end_config[1] ", end_config[0], end_config[1]
-
         dist = np.sqrt((start_config[0] - end_config[0])**2 + (start_config[1] - end_config[1])**2)
         return dist
 

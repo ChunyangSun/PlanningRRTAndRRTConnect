@@ -47,7 +47,8 @@ class RRTPlanner(object):
                 vid_end = tree.AddVertex(q_new)
                 tree.AddEdge(vid_start, vid_end)
                 # call whenever an edge is added on the tree 
-                self.planning_env.PlotEdge(q_near, q_new) 
+                if(type(self.planning_env) is SimpleEnvironment):
+                    self.planning_env.PlotEdge(q_near, q_new) 
                 # get out of the loop if q_new is very near to q_goal
                 dist = self.planning_env.ComputeDistance(q_new, goal_config)    #q_new, goal_config
         # get the goal ID in edges 
