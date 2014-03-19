@@ -1,5 +1,7 @@
 import numpy as np
-import IPython
+import pylab as pl
+import time
+import copy
 
 class HerbEnvironment(object):
     
@@ -66,6 +68,7 @@ class HerbEnvironment(object):
         while i < len(path):
             length += self.ComputeDistance(path[i-1], path[i])
             i += 1
+	print "Number of nodes: ", i
         return length
 
 
@@ -76,4 +79,36 @@ class HerbEnvironment(object):
         #  on the given path.  Terminate the shortening after the 
         #  given timout (in seconds).
         #
-        return path
+
+	start = end = time.time()
+        toBeDeleted = [1000,1000,1000,1000,1000,1000,1000]        
+	lastPath = []
+	idxList = []
+
+	# stop when there's no more shortening to be done 
+	while not np.array_equal(path, lastPath): 
+	    lastPath = copy.deepcopy(path)
+
+	    # keep checking alternate adjacent nodes  
+	    for idx in xrange(1, len(path) - 2):
+                n1 = path[idx - 1] 
+                n2 = path[idx + 1]
+
+                # make sure you are not connecting the two toBeDeleted nodes
+                if (not np.array_equal(n1, toBeDeleted)) and (not np.array_equal(n2, toBeDeleted)) and \
+	        np.array_equal(self.Extend(n1, n2), n2):
+
+		    # record the toBeDeleted node and its index
+                    path[idx] = toBeDeleted
+		    idxList.append(idx)
+
+	    # delete the toBeDeleted node according to index
+	    shortPath = np.delete(path, idxList, axis = 0)
+
+	    # break out of while loop when time out 
+	    end = time.time() 
+	    if end - start > timeout: break 
+	#print "after shortening: "
+	#print shortPath
+
+        return shortPath
